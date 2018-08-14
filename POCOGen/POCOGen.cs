@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using System.Text;
+using System.Diagnostics.Contracts;
 
 namespace POCOGeneratorFunction
 {
@@ -32,8 +33,10 @@ namespace POCOGeneratorFunction
                 : new BadRequestObjectResult(BadResult());
         }
 
-        private static string GoodResult(string name, string varLine)
+        static string GoodResult(string name, string varLine)
         {
+            Contract.Requires(string.IsNullOrEmpty(name) == false);
+            Contract.Requires(string.IsNullOrEmpty(varLine) == false);
             StringBuilder builder = new StringBuilder();
             builder.Append("// Class generated with POCO Generator Function.").AppendLine();
             builder.Append("using System;").AppendLine().AppendLine();
@@ -61,7 +64,7 @@ namespace POCOGeneratorFunction
                 {
                     builder.Append($"        private int {var} {{ get; set; }}").AppendLine();
                 }
-                else 
+                else
                 {
                     builder.Append($"        private object {var} {{ get; set; }}").AppendLine();
                 }
@@ -73,9 +76,6 @@ namespace POCOGeneratorFunction
             return builder.ToString();
         }
 
-        private static string BadResult()
-        {
-            return "Please pass a name on the query string or in the request body";
-        }
+        static string BadResult() => "Please pass a name on the query string or in the request body";
     }
 }
