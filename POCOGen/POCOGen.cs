@@ -11,7 +11,7 @@ using System.Text;
 namespace POCOGeneratorFunction
 {
     /// <summary>
-    /// Creates new POCO Generate fucntion, which after passing name of class and variables, generates simple POCO.
+    /// Creates new POCO Generate function, which after passing name of class and variables, generates simple POCO.
     /// </summary>
     public static class POCOGen
     {
@@ -39,7 +39,7 @@ namespace POCOGeneratorFunction
             builder.Append("using System;").AppendLine().AppendLine();
             builder.Append("namespace POCOGeneratorFunction").AppendLine();
             builder.Append("{").AppendLine();
-            builder.Append($"    public class {name}").AppendLine(); ;
+            builder.Append($"    public class {name}").AppendLine();
             builder.Append("    {").AppendLine();
 
             string[] vars = varLine.Split("=;, ".ToCharArray());
