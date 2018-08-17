@@ -1,4 +1,3 @@
-
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -8,6 +7,7 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using System.Text;
 using System.Diagnostics.Contracts;
+using System;
 
 namespace POCOGeneratorFunction
 {
@@ -19,7 +19,8 @@ namespace POCOGeneratorFunction
         [FunctionName("POCOGen")]
         public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a request.");
+            var dateStart = DateTime.Now;
+            log.Info("C# HTTP trigger POCOGen function started processing a request.");
 
             string name = req.Query["name"];
             string vars = req.Query["vars"];
@@ -28,9 +29,12 @@ namespace POCOGeneratorFunction
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
-            return name != null && vars != null
+            var response = name != null && vars != null
                 ? (ActionResult)new OkObjectResult(GoodResult(name, vars))
                 : new BadRequestObjectResult(BadResult());
+            var dateEnd = DateTime.Now;
+            log.Info($"C# HTTP trigger POCOGen function finished processing a request in {dateEnd-dateStart}");
+            return response;
         }
 
         static string GoodResult(string name, string varLine)
